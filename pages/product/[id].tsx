@@ -94,6 +94,7 @@ export async function getStaticProps(context: any) {
                 rating: result?.rating,
             },
         },
+        revalidate: 1,
     };
 }
 

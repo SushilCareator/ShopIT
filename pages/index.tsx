@@ -59,7 +59,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
                 rating: data.rating,
             })),
         },
-        // revalidate: 1,
+        revalidate: 1,
     };
 };
 
