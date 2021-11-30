@@ -1,0 +1,26 @@
+.productMain {
+    display: flex;
+    flex-wrap: wrap;
+    width: calc(100% - 100px);
+    height: calc(100vh - 100px - 20px);
+    margin: 50px;
+    background-color: rgba(31, 105, 105, 0.308);
+    /* justify-content: space-evenly; */
+    padding: 10px;
+}
+
+.imageMain {
+    width: 50%;
+    margin: auto;
+    position: relative;
+    height: 100%;
+    background-color: white;
+}
+
+.productData {
+    width: calc(50% - 20px);
+    margin: auto;
+    height: 50%;
+    /* padding: 10px; */
+    margin-left: 20px;
+}

@@ -55,7 +55,7 @@ const ImageSlider: React.FC<Props> = ({}) => {
 
     return (
         <>
-            <div>
+            <div className={styles.imageSlide}>
                 <div className={styles.imageMain}>
                     <div
                         onClick={arrowLeftClick}
@@ -100,6 +100,7 @@ const ImageSlider: React.FC<Props> = ({}) => {
                         src={SlideImage[slideIndex].image}
                         alt={SlideImage[slideIndex].name}
                         layout="fill"
+                        loading="lazy"
                     />
 
                     <div

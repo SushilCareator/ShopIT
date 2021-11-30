@@ -15,8 +15,10 @@ const Header: React.FC<Props> = ({}) => {
 
                 <nav className={styles.navBar}>
                     <div className={styles.navItemMain}>
-                        {HeaderItem.map((item) => (
-                            <div className={styles.navItem}>{item}</div>
+                        {HeaderItem.map((item, index) => (
+                            <div key={index} className={styles.navItem}>
+                                {item}
+                            </div>
                         ))}
                         {/* <div className={styles.navItem}>WOMEN</div>
                         <div className={styles.navItem}>MEN</div>
