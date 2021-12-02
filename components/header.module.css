@@ -24,3 +24,27 @@
     margin: 15px;
     font-size: 14px;
 }
+
+.logoutMain {
+    display: flex;
+}
+
+.profileImageMain {
+    position: relative;
+    width: 50px;
+    border-radius: 50%;
+    height: 50px;
+    margin: 0px 5px;
+}
+
+.profileImage {
+    border-radius: 50%;
+}
+
+.logoutButton {
+    /* padding: -40px; */
+    background-color: rgba(240, 248, 255, 0);
+    font-weight: 500;
+    height: 5ch;
+    margin: auto;
+}

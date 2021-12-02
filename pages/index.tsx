@@ -8,13 +8,16 @@ import Header from "../components/Header";
 import ImageSlider from "../components/ImageSlider";
 import SideBar from "../components/Sidebar";
 import styles from "../styles/Home.module.css";
+import { getCsrfToken, getSession, useSession } from "next-auth/react";
 
 type Props = {
     proucts: [];
 };
 
 const Home: React.FC<Props> = ({ proucts }) => {
-    console.log(proucts);
+    const { data: session } = useSession();
+    console.log(session, "session");
+    // console.log(proucts);
 
     return (
         <>
@@ -30,6 +33,11 @@ const Home: React.FC<Props> = ({ proucts }) => {
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
+    const logindetails = await getSession();
+    console.log(logindetails, "login with details");
+    const csrfToken = await getCsrfToken();
+    console.log(csrfToken, "login with details cref");
+
     // const {db} = await connectTo
 
     const client = await MongoClient.connect(
@@ -41,7 +49,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
     const result = await collection.find().toArray();
 
-    console.log(result);
+    // console.log(result);
 
     // client.close();
 
