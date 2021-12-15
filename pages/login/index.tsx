@@ -74,7 +74,8 @@ const Login: React.FC<Props> = ({}) => {
         })) as any;
         console.log(status);
         if (status.error === null) {
-            route.push("/");
+            console.log(status, "status");
+            // route.push("/");
         }
 
         // const data = await response.json();
