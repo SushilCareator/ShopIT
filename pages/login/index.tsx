@@ -70,7 +70,7 @@ const Login: React.FC<Props> = ({}) => {
             redirect: false,
             email: formLoginEmail,
             password: formLoginPassword,
-            callbackUrl: "http://localhost:3000/",
+            // callbackUrl: "http://localhost:3000/",
         })) as any;
         console.log(status);
         if (status.error === null) {
