@@ -1,23 +1,33 @@
 import { MongoClient } from "mongodb";
-import type { GetStaticProps, NextPage } from "next";
-import Head from "next/head";
-import Image from "next/image";
+import { GetStaticProps, NextPage } from "next";
 import React from "react";
-import Card from "../components/Card";
 import Header from "../components/Header";
-import ImageSlider from "../components/ImageSlider";
 import SideBar from "../components/Sidebar";
-import styles from "../styles/Home.module.css";
 import { getCsrfToken, getSession, useSession } from "next-auth/react";
+import { useRouter } from "next/dist/client/router";
 
 type Props = {
     proucts: [];
+    // sessions:any
 };
 
 const Home: React.FC<Props> = ({ proucts }) => {
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
     console.log(session, "session");
-    // console.log(proucts);
+    console.log(status, "status");
+
+    const routes = useRouter();
+
+    if (status === "loading") {
+        return <p>Loading...</p>;
+    }
+    if (session?.role === "admin") {
+        routes.push("/admin");
+    }
+
+    // if (status === "unauthenticated") {
+    //     return <p>Access Denied</p>;
+    // }
 
     return (
         <>
@@ -32,11 +42,11 @@ const Home: React.FC<Props> = ({ proucts }) => {
     );
 };
 
-export const getStaticProps: GetStaticProps = async (context) => {
-    const logindetails = await getSession();
-    console.log(logindetails, "login with details");
-    const csrfToken = await getCsrfToken();
-    console.log(csrfToken, "login with details cref");
+export const getStaticProps: GetStaticProps = async (context: any) => {
+    // const logindetails = await getSession();
+    // console.log(logindetails, "login with details");
+    // const csrfToken = await getCsrfToken();
+    // console.log(csrfToken, "login with details cref");
 
     // const {db} = await connectTo
 
@@ -47,7 +57,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const db = client.db();
     const collection = db.collection("products");
 
-    const result = await collection.find().toArray();
+    const result = await collection.find({ active: { $ne: false } }).toArray();
 
     // console.log(result);
 
@@ -66,6 +76,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
                 image: data.image,
                 rating: data.rating,
             })),
+            // sessions: await getSession(context),
         },
         revalidate: 1,
     };

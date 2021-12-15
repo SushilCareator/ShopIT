@@ -13,8 +13,8 @@ const Header: React.FC<Props> = ({}) => {
     const route = useRouter();
 
     const signout = () => {
-        signOut();
-        route.push("/login");
+        signOut({ callbackUrl: "http://localhost:3000/" });
+        // route.push("/login");
     };
 
     return (

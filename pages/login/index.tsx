@@ -8,6 +8,7 @@ import React, { useRef, useState } from "react";
 import jwt from "jsonwebtoken";
 import { useSession, signIn, signOut } from "next-auth/react";
 import styles from "../../styles/Login.module.css";
+import { useRouter } from "next/dist/client/router";
 
 type Props = {};
 
@@ -18,6 +19,7 @@ const Login: React.FC<Props> = ({}) => {
     const [formPassword, setFormPassword] = useState("");
     const [formLoginEmail, setFormLoginEmail] = useState("");
     const [formLoginPassword, setFormLoginPassword] = useState("");
+    const route = useRouter();
 
     const sideSignUp = () => {
         const ref = classContainer.current; // corresponding DOM node
@@ -64,13 +66,16 @@ const Login: React.FC<Props> = ({}) => {
         //     },
         // });
 
-        const status = await signIn("credentials", {
-            redirect: true,
+        const status = (await signIn("credentials", {
+            redirect: false,
             email: formLoginEmail,
             password: formLoginPassword,
             callbackUrl: "http://localhost:3000/",
-        });
+        })) as any;
         console.log(status);
+        if (status.error === null) {
+            route.push("/");
+        }
 
         // const data = await response.json();
         // console.log(data);
@@ -151,6 +156,13 @@ const Login: React.FC<Props> = ({}) => {
                                     <FontAwesomeIcon
                                         icon={faFacebookF}
                                         className="fab"
+                                        onClick={() => {
+                                            console.log("clicked");
+                                            signIn("facebook", {
+                                                callbackUrl:
+                                                    "http://localhost:3000/",
+                                            });
+                                        }}
                                     />
                                 </a>
                                 <a className="social">

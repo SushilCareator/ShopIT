@@ -8,6 +8,7 @@ import { MongoClient } from "mongodb";
 import { compareSync } from "bcryptjs";
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
 import LinkedInProvider from "next-auth/providers/linkedin";
+import { decode, encode } from "next-auth/jwt";
 
 const database = () => {
     const client = new MongoClient(
@@ -17,12 +18,29 @@ const database = () => {
     return clientPromise;
 };
 
+let role: string;
+
 export default NextAuth({
     session: {
+        strategy: "jwt",
         maxAge: 1 * 60 * 60,
     },
+    jwt: {
+        secret: "nnQl-xv0w_Ik_CG8QOFw4B378MBwTo3xKX57ncSFnnmTerthScfr2kfysQ19UB677V2kBXcrshLXKl_cUNZvMXiyiQBz6u48phZuowQpo34IX8JJ_okAcoZ8Iaxt6mvvwlRaHmjamuyhQ9HJ_ndtQzR4CpUvTScFcIekaDKyD_Bi0SKubDYHeJNZUiNEgKGuPNrVDJ_QuLZHJvwNTeVhU0hqjhxcCRKYJ4GMWR17rLynLL7GIHyAErcakz3u3yvJ8TMgQimIvXsn54aEcZNiebSG0wCpqOK8cHt2KRY1DKOh_-eIsdoK-rE0W3MY5DHJ_V-8CmNBxu4Ol03GdlaBmQ",
+        maxAge: 60 * 60 * 1,
+        // async encode({ secret, token, maxAge }) {},
+        // async decode({secret,token}{})
+    },
 
-    // adapter: MongoDBAdapter(database()),
+    pages: {
+        error: "/", // Error code passed in query string as ?error=
+    },
+
+    adapter: MongoDBAdapter(database(), {
+        collections: {
+            Sessions: "role",
+        },
+    }),
 
     providers: [
         // OAuth authentication providers...
@@ -30,10 +48,10 @@ export default NextAuth({
         //   clientId: process.env.APPLE_ID,
         //   clientSecret: process.env.APPLE_SECRET
         // }),
-        // FacebookProvider({
-        //   clientId: process.env.FACEBOOK_ID,
-        //   clientSecret: process.env.FACEBOOK_SECRET
-        // }),
+        FacebookProvider({
+            clientId: "940101450252612",
+            clientSecret: "f0664ca71443713f6ddfc19a9070b181",
+        }),
         LinkedInProvider({
             clientId: "8690yx29ylpj9y",
             clientSecret: "vWut9LGALO1gCuov",
@@ -43,11 +61,6 @@ export default NextAuth({
                 "158858758358-6jjsukdci8b2b5idu4tqtcjaonjt5uiq.apps.googleusercontent.com",
             clientSecret: "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",
         }),
-        // Passwordless / email sign in
-        // EmailProvider({
-        //   server: process.env.MAIL_SERVER,
-        //   from: 'NextAuth.js <no-reply@example.com>'
-        // }),
         CredentialsProvider({
             name: "Credentials",
             // The credentials is used to generate a suitable form on the sign in page.
@@ -81,30 +94,48 @@ export default NextAuth({
                     // client.close();
                     throw new Error("user not exist");
                 } else {
-                    const matche = compareSync(
-                        password,
-                        userExist.hashPassword
-                    );
-                    console.log(matche);
-                    if (!matche) {
-                        // client.close();
-                        throw new Error("wrong credentials");
+                    if (userExist.active === false) {
+                        throw new Error("User Deleted");
+                    } else {
+                        const matche = compareSync(
+                            password,
+                            userExist.hashPassword
+                        );
+                        console.log(matche);
+                        if (!matche) {
+                            // client.close();
+                            throw new Error("wrong credentials");
+                        }
+                        role = userExist.role == "admin" ? "admin" : "user";
+                        return {
+                            id: userExist._id.toString(),
+                            name: userExist.name,
+                            email: userExist.email,
+                            role: userExist.role,
+                        };
                     }
-                    return {
-                        id: userExist._id.toString(),
-                        name: userExist.name,
-                        email: userExist.email,
-                        role: userExist.role,
-                    };
                 }
             },
         }),
     ],
-    // session:{
-    //     jwt:true
-    // }
-    // adapter("")
 
-    adapter: MongoDBAdapter(database()),
-    // session:{jwt:true}
+    callbacks: {
+        async jwt({ token, account, isNewUser, profile, user }) {
+            if (account?.accessToken) {
+                token.accessToken = account.accessToken;
+            }
+            if (user?.roles) {
+                token.roles = user.roles;
+            }
+            return token;
+        },
+        async session({ session, token, user }) {
+            // Send properties to the client, like an access_token from a provider.
+
+            session.userId = token.sub;
+            session.role = role;
+
+            return session;
+        },
+    },
 });
