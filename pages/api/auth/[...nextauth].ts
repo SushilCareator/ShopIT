@@ -21,6 +21,7 @@ const database = () => {
 let role: string;
 
 export default NextAuth({
+    secret: "nnQl-xv0w_Ik_CG8QOFw4B378MBwTo3xKX57ncSFnnmTerthScfr2kfysQ19UB677V2kBXcrshLXKl_cUNZvMXiyiQBz6u48phZuowQpo34IX8JJ_okAcoZ8Iaxt6mvvwlRaHmjamuyhQ9HJ_ndtQzR4CpUvTScFcIekaDKyD_Bi0SKubDYHeJNZUiNEgKGuPNrVDJ_QuLZHJvwNTeVhU0hqjhxcCRKYJ4GMWR17rLynLL7GIHyAErcakz3u3yvJ8TMgQimIvXsn54aEcZNiebSG0wCpqOK8cHt2KRY1DKOh_-eIsdoK-rE0W3MY5DHJ_V-8CmNBxu4Ol03GdlaBmQ",
     session: {
         strategy: "jwt",
         maxAge: 1 * 60 * 60,
@@ -28,6 +29,7 @@ export default NextAuth({
     jwt: {
         secret: "nnQl-xv0w_Ik_CG8QOFw4B378MBwTo3xKX57ncSFnnmTerthScfr2kfysQ19UB677V2kBXcrshLXKl_cUNZvMXiyiQBz6u48phZuowQpo34IX8JJ_okAcoZ8Iaxt6mvvwlRaHmjamuyhQ9HJ_ndtQzR4CpUvTScFcIekaDKyD_Bi0SKubDYHeJNZUiNEgKGuPNrVDJ_QuLZHJvwNTeVhU0hqjhxcCRKYJ4GMWR17rLynLL7GIHyAErcakz3u3yvJ8TMgQimIvXsn54aEcZNiebSG0wCpqOK8cHt2KRY1DKOh_-eIsdoK-rE0W3MY5DHJ_V-8CmNBxu4Ol03GdlaBmQ",
         maxAge: 60 * 60 * 1,
+
         // async encode({ secret, token, maxAge }) {},
         // async decode({secret,token}{})
     },

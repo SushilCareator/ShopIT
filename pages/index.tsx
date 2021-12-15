@@ -1,6 +1,6 @@
 import { MongoClient } from "mongodb";
-import { GetStaticProps, NextPage } from "next";
-import React from "react";
+import { GetServerSideProps, GetStaticProps, NextPage } from "next";
+import React, { useEffect, useLayoutEffect } from "react";
 import Header from "../components/Header";
 import SideBar from "../components/Sidebar";
 import { getCsrfToken, getSession, useSession } from "next-auth/react";
@@ -16,13 +16,8 @@ const Home: React.FC<Props> = ({ proucts }) => {
     console.log(session, "session");
     console.log(status, "status");
 
-    const routes = useRouter();
-
     if (status === "loading") {
         return <p>Loading...</p>;
-    }
-    if (session?.role === "admin") {
-        routes.push("/admin");
     }
 
     // if (status === "unauthenticated") {
@@ -42,11 +37,22 @@ const Home: React.FC<Props> = ({ proucts }) => {
     );
 };
 
-export const getStaticProps: GetStaticProps = async (context: any) => {
-    // const logindetails = await getSession();
-    // console.log(logindetails, "login with details");
-    // const csrfToken = await getCsrfToken();
-    // console.log(csrfToken, "login with details cref");
+export const getServerSideProps: GetServerSideProps = async (context: any) => {
+    const logindetails = await getSession(context);
+    console.log(logindetails, "login with details");
+    const csrfToken = await getCsrfToken();
+    console.log(csrfToken, "login with details cref");
+
+    console.log(logindetails?.role, "user role");
+
+    if (logindetails?.role === "admin") {
+        return {
+            redirect: {
+                destination: "/admin",
+                permanent: false,
+            },
+        };
+    }
 
     // const {db} = await connectTo
 
@@ -61,7 +67,7 @@ export const getStaticProps: GetStaticProps = async (context: any) => {
 
     // console.log(result);
 
-    // client.close();
+    client.close();
 
     // res.status("200").json({ message: "Added Data" });
 
@@ -78,7 +84,7 @@ export const getStaticProps: GetStaticProps = async (context: any) => {
             })),
             // sessions: await getSession(context),
         },
-        revalidate: 1,
+        // revalidate: 1,
     };
 };
 

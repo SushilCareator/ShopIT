@@ -1,5 +1,5 @@
 import { MongoClient } from "mongodb";
-import { GetStaticProps } from "next";
+import { GetServerSideProps, GetStaticProps } from "next";
 import { getSession, useSession } from "next-auth/react";
 import React, { useRef, useState } from "react";
 import ProductsList from "../../components/productsList";
@@ -63,9 +63,20 @@ const Admin: React.FC<Props> = ({ products, users }) => {
     );
 };
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
     const loginDetails = await getSession();
     console.log(loginDetails, "login with details");
+
+    console.log(loginDetails?.role, "user role");
+
+    if (loginDetails?.role !== "admin") {
+        return {
+            redirect: {
+                destination: "/",
+                permanent: false,
+            },
+        };
+    }
 
     // const { data: session, status } = useSession();
     // console.log(session, "userSession");
@@ -87,7 +98,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
     // console.log(result);
 
-    // client.close();
+    client.close();
 
     return {
         props: {

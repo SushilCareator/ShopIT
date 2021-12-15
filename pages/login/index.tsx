@@ -70,19 +70,12 @@ const Login: React.FC<Props> = ({}) => {
             redirect: false,
             email: formLoginEmail,
             password: formLoginPassword,
-            // callbackUrl: "http://localhost:3000/",
+            callbackUrl: "http://localhost:3000/",
         })) as any;
         console.log(status);
         if (status.error === null) {
-            console.log(status, "status");
-            // route.push("/");
+            route.push("/");
         }
-
-        // const data = await response.json();
-        // console.log(data);
-
-        // const json = jwt.decode(data.token);
-        // console.log("data", json);
     };
 
     return (
